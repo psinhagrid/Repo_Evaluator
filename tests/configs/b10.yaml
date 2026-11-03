@@ -1,0 +1,204 @@
+# B10 — Parsing to vector retrieval
+# Converted to the shared 0-4 scale (pending course-owner approval).
+# Levels 4, 2 and 1 come from the rubric's Excellent, Adequate and Weak
+# columns; levels 3 and 0 are drafts to validate during calibration.
+assignment: B10
+title: Parsing to vector retrieval
+policy_version: "2026-08-17"
+models: { judge: sonnet, classifier: haiku, summary: sonnet }
+# `evaluate ... --models openai` swaps every model for this profile (pinned, dated snapshots).
+model_profiles:
+  openai: { judge: gpt-5.5-2026-04-23, classifier: gpt-5.4-mini-2026-03-17, summary: gpt-5.5-2026-04-23 }
+# USD per million tokens for models without built-in prices; fill in from OpenAI's pricing page.
+# prices:
+#   gpt-5.5-2026-04-23: { in: 0.0, out: 0.0, cache_read: 0.0 }
+#   gpt-5.4-mini-2026-03-17: { in: 0.0, out: 0.0, cache_read: 0.0 }
+integrity: { injection_consequence: flag }   # open decision: flag | zero_total
+cohort: { similarity_threshold: 0.8 }
+scale: { min: 0, max: 4, step: 0.5 }
+near_cutoff_points: 3
+
+criteria:
+  - id: decision_framing
+    name: Decision framing & hypotheses
+    weight: 10
+    model: judge
+    levels:
+      4: Crisp decision, constraints and non-goals; three or more competing, falsifiable hypotheses
+      3: All present, but hypothesis order unprovable or some hypotheses broad
+      2: Hypotheses broad or weakly discriminating
+      1: Product summary, or a single favoured explanation
+      0: No framing or hypotheses
+    level_sources: { 4: rubric, 3: draft, 2: rubric, 1: rubric, 0: draft }
+    elements:
+      - { id: decision, text: A crisp design decision with constraints and non-goals, evidence: [md] }
+      - { id: hypotheses, text: Three or more competing falsifiable hypotheses, evidence: [md] }
+      - { id: hypotheses_first, text: Hypotheses recorded before experiments (commit order), evidence: [git, fact, md] }
+
+  - id: architecture_reconstruction
+    name: Architecture reconstruction
+    weight: 20
+    model: judge
+    levels:
+      4: Real entry point traced through every boundary with exact evidence
+      3: Full path traced; one or two boundaries thin
+      2: Main path right; boundaries assumed
+      1: README-level component list
+      0: No reconstruction
+    level_sources: { 4: rubric, 3: draft, 2: rubric, 1: rubric, 0: draft }
+    elements:
+      - { id: entry_point, text: The real entry point identified, evidence: [code, md] }
+      - { id: boundaries, text: Every boundary on the path traced with exact evidence, evidence: [code, config, md] }
+
+  - id: experimental_rigor
+    name: Experimental rigor
+    weight: 20
+    model: judge
+    levels:
+      4: Reproducible controlled and failure experiments; one variable changed at a time; predictions stated; raw evidence; counterevidence reported
+      3: Both experiments ran with controls; one notable gap
+      2: Controls, predictions or artifacts incomplete
+      1: Demo only, or unverifiable claims
+      0: No experiment
+    level_sources: { 4: rubric, 3: draft, 2: rubric, 1: rubric, 0: draft }
+    findings: [no_controlled_experiment, no_failure_injection]
+    elements:
+      - { id: controlled_experiment, text: A reproducible controlled experiment changing one variable, evidence: [code, shell, csv, json, log] }
+      - { id: failure_experiment, text: A reproducible failure-injection experiment, evidence: [code, shell, csv, json, log] }
+      - { id: predictions, text: Predictions stated before results, evidence: [md, git] }
+      - { id: raw_evidence, text: Raw evidence saved, evidence: [csv, json, log] }
+      - { id: counterevidence, text: Counterevidence reported, evidence: [md, csv, json, log] }
+    extra_guidance: >-
+      Report no_controlled_experiment / no_failure_injection as true only when you searched and found
+      no executed experiment of that kind (cite the searches); planned-but-not-run counts as absent.
+
+  - id: production_reasoning
+    name: Production-systems reasoning
+    weight: 15
+    model: judge
+    levels:
+      4: SLOs, safety, cost, scale and recovery each tied to evidence; no padding
+      3: Most concerns tied to evidence
+      2: Several concerns, with shallow causality
+      1: Generic advice
+      0: None
+    level_sources: { 4: rubric, 3: draft, 2: rubric, 1: rubric, 0: draft }
+    elements:
+      - { id: slos, text: SLOs tied to evidence, evidence: [md, code, config, csv, json] }
+      - { id: safety_cost_scale_recovery, text: Safety, cost, scale and recovery each tied to evidence, evidence: [md, code, config, csv, json, log] }
+      - { id: no_padding, text: No generic padding, evidence: [md] }
+
+  - id: evidence_quality
+    name: Evidence quality & provenance
+    weight: 15
+    model: judge
+    levels:
+      4: Commit-bound source, test and config citations; runtime artifacts; evidence ledger; confidence levels
+      3: Pinned citations and ledger; one thin area
+      2: Unpinned links or inconsistent labels
+      1: README or AI claims presented as facts; no ledger
+      0: No traceable evidence
+    level_sources: { 4: rubric, 3: draft, 2: rubric, 1: rubric, 0: draft }
+    findings: [fabricated_results]
+    elements:
+      - { id: commit_bound, text: Citations pinned to a commit for source, test and config, evidence: [md, fact] }
+      - { id: runtime_artifacts, text: Runtime artifacts saved, evidence: [log, csv, json] }
+      - { id: ledger, text: An evidence ledger with confidence levels, evidence: [md, csv] }
+    extra_guidance: >-
+      Report fabricated_results as true only if a reported number contradicts the raw artifact it
+      claims to come from and no explanation is given; cite both locations.
+
+  - id: synthesis
+    name: Synthesis & decision quality
+    weight: 10
+    model: judge
+    # Rubric bands were raw points (9-10, 6-8, 3-5, 0-2); rewritten as level text.
+    levels:
+      4: Answers the design decision directly, with comparative evidence
+      3: Credible answer with limited depth
+      2: Mostly a generic review; the decision is answered weakly
+      1: Mentions the decision but does not answer it
+      0: No decision addressed
+    level_sources: { 4: rubric, 3: draft, 2: rubric, 1: draft, 0: draft }
+    elements:
+      - { id: answers_decision, text: Answers the design decision directly, evidence: [md] }
+      - { id: comparative_evidence, text: Uses comparative evidence, evidence: [md, csv, json] }
+
+  - id: ai_use_transparency
+    name: AI-use transparency
+    weight: 5
+    model: judge
+    levels:
+      4: Contributions, prompts, accepted and rejected suggestions all auditable
+      3: All disclosed; one element unclear
+      2: General disclosure only
+      1: AI use hidden, or presented as execution
+      0: No disclosure (also triggers the 75 cap)
+    level_sources: { 4: rubric, 3: draft, 2: rubric, 1: rubric, 0: draft }
+    elements:
+      - { id: contributions, text: AI contributions disclosed, evidence: [md, git] }
+      - { id: prompts, text: Prompts auditable, evidence: [md, log, json] }
+      - { id: accepted_rejected, text: Accepted and rejected suggestions recorded, evidence: [md, log] }
+
+  - id: communication
+    name: Communication & reproducibility
+    weight: 5
+    model: judge
+    levels:
+      4: Executive summary first; exact commands; sanitized artifacts; clear limits
+      3: Clear, with minor gaps
+      2: Uneven, or reproduction needs interpretation
+      1: Hard to follow or unreproducible
+      0: No readable paper
+    level_sources: { 4: rubric, 3: draft, 2: rubric, 1: rubric, 0: draft }
+    elements:
+      - { id: executive_first, text: Executive summary first, evidence: [md] }
+      - { id: exact_commands, text: Exact reproduction commands, evidence: [md, shell] }
+      - { id: sanitized_artifacts, text: Artifacts sanitized (no secrets or junk), evidence: [fact, md] }
+      - { id: clear_limits, text: Limits stated clearly, evidence: [md] }
+
+signals:
+  version_manifest:
+    description: Commit SHA or version manifest present
+    any_file: ["*manifest*", "VERSION*", "*versions*.txt", "*versions*.json"]
+    any_text: ["\\b(?:commit|sha|revision)\\b[^\\n]{0,20}\\b[0-9a-f]{7,40}\\b"]
+  controlled_experiment:
+    description: Controlled experiment artifacts present
+    any_file: ["*experiment*", "*ablation*", "*control*"]
+    any_heading: ["controlled experiment", "experiment", "ablation"]
+  failure_injection:
+    description: Failure-injection experiment present
+    any_file: ["*failure*", "*fault*", "*chaos*"]
+    any_heading: ["failure", "fault injection", "chaos"]
+  evidence_ledger:
+    description: Evidence ledger present
+    any_file: ["*ledger*"]
+    any_heading: ["evidence ledger", "ledger"]
+  ai_use_disclosure:
+    description: AI-use disclosure present
+    any_file: ["*ai*use*", "*ai*disclosure*"]
+    any_heading: ["ai[- ]use", "ai disclosure", "use of ai", "ai assistance", "ai[- ]collaboration"]
+  reported_vs_raw_mismatch:
+    description: Reported numbers disagree with raw results (cross-artifact check)
+    fact: cross_artifact.disagreements
+
+caps:
+  - { id: no_version_manifest, max: 85, decided_by: fact, signal: version_manifest, when: absent,
+      description: No commit SHA or version manifest }
+  - { id: no_controlled_experiment, max: 70, decided_by: fact_and_judge, signal: controlled_experiment, when: absent,
+      judge_finding: no_controlled_experiment, description: No controlled experiment }
+  - { id: no_failure_injection, max: 80, decided_by: fact_and_judge, signal: failure_injection, when: absent,
+      judge_finding: no_failure_injection, description: No failure injection }
+  - { id: no_evidence_ledger, max: 70, decided_by: fact, signal: evidence_ledger, when: absent,
+      description: No evidence ledger }
+  - { id: no_ai_disclosure, max: 75, decided_by: fact, signal: ai_use_disclosure, when: absent,
+      description: No AI-use disclosure }
+  - { id: fabricated_results, max: 50, decided_by: fact_and_judge, signal: reported_vs_raw_mismatch, when: present,
+      judge_finding: fabricated_results, description: Fabricated results or concealed AI evidence }
+
+bands:
+  - { name: Distinction, min: 90 }
+  - { name: Strong pass, min: 80 }
+  - { name: Pass, min: 70 }
+  - { name: Revision required, min: 60 }
+  - { name: Insufficient, min: 0 }

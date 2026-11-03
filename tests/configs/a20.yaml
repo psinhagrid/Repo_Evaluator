@@ -1,0 +1,147 @@
+# A20 — Calibrating the Judge
+# Level 4 and the AI-collaboration level-0 rule come from the rubric; every
+# other level is a draft to validate during calibration (level_sources).
+# Element evidence types: code, shell, md, csv, json, config, dependencies,
+# log, git, fact (a fact-sheet path), notebook.
+assignment: A20
+title: Calibrating the Judge
+policy_version: "2026-08-17"
+scale: { min: 0, max: 4, step: 0.5 }
+near_cutoff_points: 3
+
+models: { judge: sonnet, classifier: haiku, summary: sonnet }
+# `evaluate ... --models openai` swaps every model for this profile (pinned, dated snapshots).
+model_profiles:
+  openai: { judge: gpt-5.5-2026-04-23, classifier: gpt-5.4-mini-2026-03-17, summary: gpt-5.5-2026-04-23 }
+# USD per million tokens for models without built-in prices; fill in from OpenAI's pricing page.
+# prices:
+#   gpt-5.5-2026-04-23: { in: 0.0, out: 0.0, cache_read: 0.0 }
+#   gpt-5.4-mini-2026-03-17: { in: 0.0, out: 0.0, cache_read: 0.0 }
+integrity: { injection_consequence: flag }   # open decision: flag | zero_total
+cohort: { similarity_threshold: 0.8 }
+
+criteria:
+  - id: ground_truth
+    name: Ground-truth discipline
+    weight: 25
+    model: judge
+    reading_list: ["rubric*", "*label*", "*borderline*"]
+    levels:
+      4: Written rubric; labels provably created before grader outputs; borderline cases documented; both classes represented
+      3: Rubric and borderline notes solid; labelling order unprovable or classes badly imbalanced
+      2: Rubric vague, or borderline cases undocumented
+      1: Labels present but no written rubric
+      0: No hand labels, or labels copied from graders
+    level_sources: { 4: rubric, 3: draft, 2: draft, 1: draft, 0: draft }
+    elements:
+      - { id: written_rubric, text: A written labelling rubric exists, evidence: [md] }
+      - { id: labels_before_outputs, text: Labels provably created before grader outputs (commit history), evidence: [git, fact] }
+      - { id: borderline_documented, text: Borderline cases documented with reasoning, evidence: [md, csv] }
+      - { id: both_classes, text: Both classes represented in the labels, evidence: [csv, fact] }
+
+  - id: agreement_analysis
+    name: Agreement analysis
+    weight: 30
+    model: judge
+    reading_list: ["*.py", "results/*", "*.csv", "*.json"]
+    # Code criterion: documentation only arrives as claims to verify.
+    hidden: ["README*", "WRITEUP*", "*writeup*", "*write-up*"]
+    doc_claims: true
+    levels:
+      4: All graders measured with confusion matrices and kappa; every judge disagreement examined; self-consistency prominent; thresholds tuned on held-out data; claims backed by saved results
+      3: All elements present, with one methodological weakness
+      2: All elements present, with several weaknesses or an unbacked key claim
+      1: Accuracy only; self-consistency missing
+      0: No agreement measured
+    level_sources: { 4: rubric, 3: draft, 2: draft, 1: draft, 0: draft }
+    elements:
+      - { id: confusion_and_kappa, text: Every grader measured with a confusion matrix and kappa, evidence: [code, csv, json, log] }
+      - { id: disagreements_examined, text: Every judge disagreement examined, evidence: [csv, json, md, log] }
+      - { id: self_consistency, text: Self-consistency measured and reported prominently, evidence: [code, csv, json, log, md] }
+      - { id: held_out_thresholds, text: Thresholds tuned on data held out from scoring, evidence: [code] }
+      - { id: saved_results, text: Claims backed by saved result files, evidence: [csv, json, log] }
+
+  - id: deployment_recommendation
+    name: Deployment recommendation
+    weight: 20
+    model: judge
+    reading_list: ["WRITEUP*", "*.md", "results/*"]
+    levels:
+      4: Each grader mapped to a dimension and to CI or offline use, each tied to a measured result; limits stated
+      3: Complete and data-driven, but the evidence base is weak
+      2: Partly generic, or not tied to measurements
+      1: Generic advice
+      0: No recommendation
+    level_sources: { 4: rubric, 3: draft, 2: draft, 1: draft, 0: draft }
+    elements:
+      - { id: grader_mapping, text: Each grader mapped to a quality dimension and to CI or offline use, evidence: [md] }
+      - { id: tied_to_measurements, text: Each recommendation tied to a measured result, evidence: [csv, json, log, code] }
+      - { id: limits_stated, text: Limits of the recommendation stated, evidence: [md] }
+
+  - id: professional_baseline
+    name: Professional baseline
+    weight: 15
+    # Fact-heavy: candidate for Haiku if it passes calibration (spec, model routing).
+    model: judge
+    reading_list: ["README*", "*.sh", Makefile, "requirements*.txt", pyproject.toml, "*.py"]
+    doc_claims: true
+    levels:
+      4: README; one command reproduces every number and chart; versions pinned; metrics produced by scripts; spend reported
+      3: All met, with one minor gap
+      2: Structure present; the one command misses some reported numbers
+      1: Several basics missing
+      0: No README or no runnable code
+    level_sources: { 4: rubric, 3: draft, 2: draft, 1: draft, 0: draft }
+    elements:
+      - { id: readme, text: README explains setup and use, evidence: [md] }
+      - { id: one_command, text: One command reproduces every reported number and chart, evidence: [code, shell] }
+      - { id: versions_pinned, text: Dependency and model versions pinned, evidence: [dependencies, code, fact] }
+      - { id: script_metrics, text: Metrics are produced by scripts rather than typed by hand, evidence: [code] }
+      - { id: spend_reported, text: API spend reported, evidence: [csv, json, log, md] }
+
+  - id: ai_collaboration
+    name: AI-collaboration log & communication
+    weight: 10
+    model: judge
+    reading_list: ["*ai*log*", "*AI*LOG*", "WRITEUP*", "*.md"]
+    findings: [unedited_ai_output]
+    levels:
+      4: Two or more agent mistakes caught by the human; human-edited write-up of at most 2 pages
+      3: Two catches with an uneven write-up, or one catch with a strong write-up
+      2: Log present; mistakes mostly caught by the agent itself
+      1: Thin log; weak or overlong write-up
+      0: No log, or unedited model output (rubric rule; see zero_rules)
+    level_sources: { 4: rubric, 3: draft, 2: draft, 1: draft, 0: rubric }
+    elements:
+      - { id: human_catches, text: Two or more agent mistakes caught by the human, each described, evidence: [md, git] }
+      - { id: human_edited, text: The write-up shows human editing, evidence: [md, git] }
+      - { id: length_limit, text: Write-up is at most 2 pages, evidence: [md, fact] }
+    extra_guidance: >-
+      Judge authorship only from explicit statements and process evidence, never from writing style.
+      Report finding unedited_ai_output as true only if the submission explicitly states that the
+      write-up was not edited by the student; "Claude drafted it and I rewrote it" is false.
+
+signals:
+  readme:
+    description: README present
+    any_file: ["README*"]
+  ai_collaboration_log:
+    description: AI-collaboration log present
+    any_file: ["*ai*log*", "*ai_collab*", "*agent*log*"]
+    any_heading: ["ai[- ]collaboration", "agent log", "ai log"]
+
+caps: []
+
+zero_rules:
+  - id: unedited_ai_output
+    criterion: ai_collaboration
+    finding: unedited_ai_output
+    description: Write-up is unedited model output (explicit self-disclosure)
+    phrases:
+      - "\\b(?:not|never|didn't|did not)\\s+(?:been\\s+)?(?:edit|edited|modif(?:y|ied)|revis(?:e|ed)|chang(?:e|ed))\\b"
+      - "\\bunedited\\b"
+      - "\\b(?:entirely|fully|completely|wholly)\\s+(?:written|generated|produced)\\s+by\\s+(?:an?\\s+)?(?:AI|LLM|Claude|ChatGPT|GPT|the agent|the model)"
+      - "\\bas generated by\\b"
+
+# A20 bands are not given in the spec; open decision for the course owner.
+bands: []

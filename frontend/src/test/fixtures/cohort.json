@@ -1,0 +1,428 @@
+{
+  "assignment": "B10",
+  "policy_version": "2026-08-17",
+  "submissions": 6,
+  "graded": 6,
+  "not_graded": {},
+  "ranking": [
+    {
+      "rank": 1,
+      "submission": "candidate-00-57d0cb",
+      "sha": "00432e24c3db",
+      "final": 65.63,
+      "total": 65.63,
+      "band": "Revision required",
+      "percentile": 91.7,
+      "caps": ["no_version_manifest", "no_evidence_ledger"],
+      "binding_cap": null,
+      "confidence": "Low",
+      "tied_with": [],
+      "ratings": {
+        "decision_framing": 3.0,
+        "architecture_reconstruction": 2.5,
+        "experimental_rigor": 2.5,
+        "production_reasoning": 3.0,
+        "evidence_quality": 2.0,
+        "synthesis": 3.0,
+        "ai_use_transparency": 4.0,
+        "communication": 1.5
+      }
+    },
+    {
+      "rank": 2,
+      "submission": "candidate-01-dfad68",
+      "sha": "d973d9e91474",
+      "final": 63.75,
+      "total": 63.75,
+      "band": "Revision required",
+      "percentile": 75.0,
+      "caps": ["no_version_manifest", "no_evidence_ledger"],
+      "binding_cap": null,
+      "confidence": "Low",
+      "tied_with": [],
+      "ratings": {
+        "decision_framing": 2.5,
+        "architecture_reconstruction": 2.5,
+        "experimental_rigor": 2.5,
+        "production_reasoning": 3.0,
+        "evidence_quality": 2.0,
+        "synthesis": 2.0,
+        "ai_use_transparency": 4.0,
+        "communication": 3.0
+      }
+    },
+    {
+      "rank": 3,
+      "submission": "candidate-02-eb1074",
+      "sha": "fd8b00e7e9fc",
+      "final": 61.25,
+      "total": 61.25,
+      "band": "Revision required",
+      "percentile": 33.3,
+      "caps": ["no_version_manifest", "no_evidence_ledger"],
+      "binding_cap": null,
+      "confidence": "Low",
+      "tied_with": ["candidate-03-7e00c0", "candidate-04-ed68e8", "candidate-05-7b37d9"],
+      "ratings": {
+        "decision_framing": 3.0,
+        "architecture_reconstruction": 2.5,
+        "experimental_rigor": 2.5,
+        "production_reasoning": 2.0,
+        "evidence_quality": 2.0,
+        "synthesis": 2.0,
+        "ai_use_transparency": 4.0,
+        "communication": 3.0
+      }
+    },
+    {
+      "rank": 4,
+      "submission": "candidate-03-7e00c0",
+      "sha": "1207e7378eda",
+      "final": 61.25,
+      "total": 61.25,
+      "band": "Revision required",
+      "percentile": 33.3,
+      "caps": ["no_version_manifest", "no_evidence_ledger"],
+      "binding_cap": null,
+      "confidence": "Low",
+      "tied_with": ["candidate-02-eb1074", "candidate-04-ed68e8", "candidate-05-7b37d9"],
+      "ratings": {
+        "decision_framing": 3.0,
+        "architecture_reconstruction": 2.5,
+        "experimental_rigor": 2.5,
+        "production_reasoning": 2.0,
+        "evidence_quality": 2.0,
+        "synthesis": 2.0,
+        "ai_use_transparency": 4.0,
+        "communication": 3.0
+      }
+    },
+    {
+      "rank": 5,
+      "submission": "candidate-04-ed68e8",
+      "sha": "c27fa1f339ec",
+      "final": 61.25,
+      "total": 61.25,
+      "band": "Revision required",
+      "percentile": 33.3,
+      "caps": ["no_version_manifest", "no_evidence_ledger"],
+      "binding_cap": null,
+      "confidence": "Low",
+      "tied_with": ["candidate-02-eb1074", "candidate-03-7e00c0", "candidate-05-7b37d9"],
+      "ratings": {
+        "decision_framing": 3.0,
+        "architecture_reconstruction": 2.5,
+        "experimental_rigor": 2.5,
+        "production_reasoning": 2.0,
+        "evidence_quality": 2.0,
+        "synthesis": 2.0,
+        "ai_use_transparency": 4.0,
+        "communication": 3.0
+      }
+    },
+    {
+      "rank": 6,
+      "submission": "candidate-05-7b37d9",
+      "sha": "bd5e729121d3",
+      "final": 61.25,
+      "total": 61.25,
+      "band": "Revision required",
+      "percentile": 33.3,
+      "caps": ["no_version_manifest", "no_evidence_ledger"],
+      "binding_cap": null,
+      "confidence": "Low",
+      "tied_with": ["candidate-02-eb1074", "candidate-03-7e00c0", "candidate-04-ed68e8"],
+      "ratings": {
+        "decision_framing": 3.0,
+        "architecture_reconstruction": 2.5,
+        "experimental_rigor": 2.5,
+        "production_reasoning": 2.0,
+        "evidence_quality": 2.0,
+        "synthesis": 2.0,
+        "ai_use_transparency": 4.0,
+        "communication": 3.0
+      }
+    }
+  ],
+  "bands": {
+    "Revision required": 6
+  },
+  "criteria": {
+    "decision_framing": {
+      "mean": 2.92,
+      "median": 3.0,
+      "distribution": {
+        "2.5": 1,
+        "3.0": 5
+      }
+    },
+    "architecture_reconstruction": {
+      "mean": 2.5,
+      "median": 2.5,
+      "distribution": {
+        "2.5": 6
+      }
+    },
+    "experimental_rigor": {
+      "mean": 2.5,
+      "median": 2.5,
+      "distribution": {
+        "2.5": 6
+      }
+    },
+    "production_reasoning": {
+      "mean": 2.33,
+      "median": 2.0,
+      "distribution": {
+        "2.0": 4,
+        "3.0": 2
+      }
+    },
+    "evidence_quality": {
+      "mean": 2.0,
+      "median": 2.0,
+      "distribution": {
+        "2.0": 6
+      }
+    },
+    "synthesis": {
+      "mean": 2.17,
+      "median": 2.0,
+      "distribution": {
+        "2.0": 5,
+        "3.0": 1
+      }
+    },
+    "ai_use_transparency": {
+      "mean": 4.0,
+      "median": 4.0,
+      "distribution": {
+        "4.0": 6
+      }
+    },
+    "communication": {
+      "mean": 2.75,
+      "median": 3.0,
+      "distribution": {
+        "1.5": 1,
+        "3.0": 5
+      }
+    }
+  },
+  "common_gaps": [
+    ["decision_framing.decision (missing)", 6],
+    ["decision_framing.hypotheses (missing)", 6],
+    ["decision_framing.hypotheses_first (missing)", 6],
+    ["architecture_reconstruction.entry_point (missing)", 6],
+    ["architecture_reconstruction.boundaries (missing)", 6],
+    ["experimental_rigor.controlled_experiment (missing)", 6],
+    ["experimental_rigor.failure_experiment (missing)", 6],
+    ["experimental_rigor.predictions (missing)", 6],
+    ["experimental_rigor.raw_evidence (missing)", 6],
+    ["experimental_rigor.counterevidence (missing)", 6],
+    ["production_reasoning.slos (missing)", 6],
+    ["production_reasoning.safety_cost_scale_recovery (missing)", 6],
+    ["production_reasoning.no_padding (missing)", 6],
+    ["evidence_quality.commit_bound (missing)", 6],
+    ["evidence_quality.runtime_artifacts (missing)", 6]
+  ],
+  "caps_applied": {
+    "no_version_manifest": 6,
+    "no_evidence_ledger": 6
+  },
+  "hygiene": {
+    "forbidden_files": 6,
+    "secret_matches": 6,
+    "placeholders": 6
+  },
+  "order_trend": {
+    "n": 6,
+    "rho": null,
+    "p": null,
+    "flag": false,
+    "note": "too few submissions"
+  },
+  "similarity": [
+    {
+      "a": "candidate-00-57d0cb",
+      "b": "candidate-01-dfad68",
+      "kind": "code",
+      "score": 1.0
+    },
+    {
+      "a": "candidate-00-57d0cb",
+      "b": "candidate-02-eb1074",
+      "kind": "code",
+      "score": 1.0
+    },
+    {
+      "a": "candidate-00-57d0cb",
+      "b": "candidate-03-7e00c0",
+      "kind": "code",
+      "score": 1.0
+    },
+    {
+      "a": "candidate-00-57d0cb",
+      "b": "candidate-04-ed68e8",
+      "kind": "code",
+      "score": 1.0
+    },
+    {
+      "a": "candidate-00-57d0cb",
+      "b": "candidate-05-7b37d9",
+      "kind": "code",
+      "score": 1.0
+    },
+    {
+      "a": "candidate-01-dfad68",
+      "b": "candidate-02-eb1074",
+      "kind": "code",
+      "score": 1.0
+    },
+    {
+      "a": "candidate-01-dfad68",
+      "b": "candidate-03-7e00c0",
+      "kind": "code",
+      "score": 1.0
+    },
+    {
+      "a": "candidate-01-dfad68",
+      "b": "candidate-04-ed68e8",
+      "kind": "code",
+      "score": 1.0
+    },
+    {
+      "a": "candidate-01-dfad68",
+      "b": "candidate-05-7b37d9",
+      "kind": "code",
+      "score": 1.0
+    },
+    {
+      "a": "candidate-02-eb1074",
+      "b": "candidate-03-7e00c0",
+      "kind": "code",
+      "score": 1.0
+    },
+    {
+      "a": "candidate-02-eb1074",
+      "b": "candidate-04-ed68e8",
+      "kind": "code",
+      "score": 1.0
+    },
+    {
+      "a": "candidate-02-eb1074",
+      "b": "candidate-05-7b37d9",
+      "kind": "code",
+      "score": 1.0
+    },
+    {
+      "a": "candidate-03-7e00c0",
+      "b": "candidate-04-ed68e8",
+      "kind": "code",
+      "score": 1.0
+    },
+    {
+      "a": "candidate-03-7e00c0",
+      "b": "candidate-05-7b37d9",
+      "kind": "code",
+      "score": 1.0
+    },
+    {
+      "a": "candidate-04-ed68e8",
+      "b": "candidate-05-7b37d9",
+      "kind": "code",
+      "score": 1.0
+    },
+    {
+      "a": "candidate-00-57d0cb",
+      "b": "candidate-01-dfad68",
+      "kind": "writeup",
+      "score": 0.956
+    },
+    {
+      "a": "candidate-00-57d0cb",
+      "b": "candidate-02-eb1074",
+      "kind": "writeup",
+      "score": 0.956
+    },
+    {
+      "a": "candidate-00-57d0cb",
+      "b": "candidate-03-7e00c0",
+      "kind": "writeup",
+      "score": 0.956
+    },
+    {
+      "a": "candidate-00-57d0cb",
+      "b": "candidate-04-ed68e8",
+      "kind": "writeup",
+      "score": 0.956
+    },
+    {
+      "a": "candidate-00-57d0cb",
+      "b": "candidate-05-7b37d9",
+      "kind": "writeup",
+      "score": 0.956
+    },
+    {
+      "a": "candidate-01-dfad68",
+      "b": "candidate-02-eb1074",
+      "kind": "writeup",
+      "score": 0.956
+    },
+    {
+      "a": "candidate-01-dfad68",
+      "b": "candidate-03-7e00c0",
+      "kind": "writeup",
+      "score": 0.956
+    },
+    {
+      "a": "candidate-01-dfad68",
+      "b": "candidate-04-ed68e8",
+      "kind": "writeup",
+      "score": 0.956
+    },
+    {
+      "a": "candidate-01-dfad68",
+      "b": "candidate-05-7b37d9",
+      "kind": "writeup",
+      "score": 0.956
+    },
+    {
+      "a": "candidate-02-eb1074",
+      "b": "candidate-03-7e00c0",
+      "kind": "writeup",
+      "score": 0.956
+    },
+    {
+      "a": "candidate-02-eb1074",
+      "b": "candidate-04-ed68e8",
+      "kind": "writeup",
+      "score": 0.956
+    },
+    {
+      "a": "candidate-02-eb1074",
+      "b": "candidate-05-7b37d9",
+      "kind": "writeup",
+      "score": 0.956
+    },
+    {
+      "a": "candidate-03-7e00c0",
+      "b": "candidate-04-ed68e8",
+      "kind": "writeup",
+      "score": 0.956
+    },
+    {
+      "a": "candidate-03-7e00c0",
+      "b": "candidate-05-7b37d9",
+      "kind": "writeup",
+      "score": 0.956
+    },
+    {
+      "a": "candidate-04-ed68e8",
+      "b": "candidate-05-7b37d9",
+      "kind": "writeup",
+      "score": 0.956
+    }
+  ],
+  "cost_usd": 1.24
+}

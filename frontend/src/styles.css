@@ -1,0 +1,177 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Grader Console design system.
+ * Calm, academic, information-dense. Off-white background, deep teal accent,
+ * semantic colours used sparingly (green = found/applied, amber = partial,
+ * red = missing/high severity, slate = not triggered).
+ */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-dim: var(--dim);
+  --color-dim-soft: var(--dim-soft);
+}
+
+:root {
+  --radius: 0.55rem;
+  --background: oklch(0.978 0.006 95);
+  --foreground: oklch(0.235 0.02 255);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.235 0.02 255);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.235 0.02 255);
+  --primary: oklch(0.5 0.075 205);
+  --primary-foreground: oklch(0.985 0.005 95);
+  --secondary: oklch(0.955 0.008 210);
+  --secondary-foreground: oklch(0.3 0.03 210);
+  --muted: oklch(0.955 0.008 210);
+  --muted-foreground: oklch(0.5 0.02 255);
+  --accent: oklch(0.945 0.025 200);
+  --accent-foreground: oklch(0.34 0.06 205);
+  --destructive: oklch(0.53 0.19 27);
+  --destructive-foreground: oklch(0.985 0.005 95);
+  --border: oklch(0.905 0.01 230);
+  --input: oklch(0.905 0.01 230);
+  --ring: oklch(0.6 0.08 205);
+  --ok: oklch(0.5 0.12 155);
+  --ok-soft: oklch(0.94 0.045 155);
+  --warn: oklch(0.6 0.13 70);
+  --warn-soft: oklch(0.955 0.055 80);
+  --bad: oklch(0.53 0.19 27);
+  --bad-soft: oklch(0.945 0.035 27);
+  --dim: oklch(0.5 0.02 255);
+  --dim-soft: oklch(0.945 0.008 255);
+}
+
+.dark {
+  --background: oklch(0.185 0.012 240);
+  --foreground: oklch(0.93 0.008 240);
+  --card: oklch(0.225 0.014 240);
+  --card-foreground: oklch(0.93 0.008 240);
+  --popover: oklch(0.225 0.014 240);
+  --popover-foreground: oklch(0.93 0.008 240);
+  --primary: oklch(0.7 0.09 195);
+  --primary-foreground: oklch(0.16 0.02 220);
+  --secondary: oklch(0.27 0.015 240);
+  --secondary-foreground: oklch(0.93 0.008 240);
+  --muted: oklch(0.27 0.015 240);
+  --muted-foreground: oklch(0.68 0.015 240);
+  --accent: oklch(0.29 0.03 200);
+  --accent-foreground: oklch(0.9 0.03 195);
+  --destructive: oklch(0.65 0.17 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.55 0.06 200);
+  --ok: oklch(0.74 0.13 155);
+  --ok-soft: oklch(0.74 0.13 155 / 15%);
+  --warn: oklch(0.79 0.13 80);
+  --warn-soft: oklch(0.79 0.13 80 / 15%);
+  --bad: oklch(0.7 0.16 25);
+  --bad-soft: oklch(0.7 0.16 25 / 15%);
+  --dim: oklch(0.68 0.015 240);
+  --dim-soft: oklch(1 0 0 / 8%);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+}
+
+/* Dense data tables with sticky headers and tabular numbers. */
+@utility dense-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-variant-numeric: tabular-nums;
+
+  & th,
+  & td {
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid var(--color-border);
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  & thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: var(--color-card);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-muted-foreground);
+    white-space: nowrap;
+  }
+
+  & tbody tr:hover {
+    background-color: var(--color-accent);
+  }
+
+  & td.num,
+  & th.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media print {
+  [data-print-hide] {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+  }
+}

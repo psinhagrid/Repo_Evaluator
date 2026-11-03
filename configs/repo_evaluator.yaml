@@ -1,0 +1,214 @@
+# Repo Evaluator — the evaluator's rubric.
+# Level text comes verbatim from the course rubric (all five levels per criterion).
+# Elements split each 4/4 description into the parts the judge must find evidence for.
+assignment: Repo Evaluator
+title: Codebase analysis
+policy_version: "2026-10-26"
+models: { judge: sonnet, classifier: haiku, summary: sonnet }
+# `--models openai` (or EVALUATOR_MODELS=openai in .env) swaps every model for this profile.
+model_profiles:
+  openai: { judge: gpt-5.5-2026-04-23, classifier: gpt-5.4-mini-2026-03-17, summary: gpt-5.5-2026-04-23 }
+# USD per million tokens, standard tier (developers.openai.com/api/docs/pricing, 2026-10-26).
+# gpt-5.5 doubles input and raises output to $45 above 272K input tokens; our calls stay well below.
+prices:
+  gpt-5.5-2026-04-23: { in: 5.00, out: 30.00, cache_read: 0.50 }
+  gpt-5.4-mini-2026-03-17: { in: 0.75, out: 4.50, cache_read: 0.075 }
+integrity: { injection_consequence: flag }   # open decision: flag | zero_total
+cohort: { similarity_threshold: 0.8 }
+scale: { min: 0, max: 4, step: 0.5 }
+near_cutoff_points: 3
+# Synthesis judges the answer to the assignment's design decision: paste the assignment brief
+# on the Grade page (or set assignment_text here) so the judge knows what that decision is.
+assignment_text: ""
+
+criteria:
+  - id: decision_framing
+    name: Decision framing & competing hypotheses
+    weight: 10
+    model: judge
+    levels:
+      4: Decision, constraints, and non-goals are crisp; 3+ genuinely competing, falsifiable hypotheses
+      3: All present and genuinely competing, but written-before-tracing order isn't provable, or some hypotheses are broad
+      2: Scope and hypotheses exist but are broad or weakly discriminating
+      1: Product summary, or one favored explanation presented as fact
+      0: No decision framing or hypotheses
+    level_sources: { 4: rubric, 3: rubric, 2: rubric, 1: rubric, 0: rubric }
+    elements:
+      - { id: decision, text: "Decision, constraints and non-goals stated crisply", evidence: [md] }
+      - { id: hypotheses, text: "Three or more genuinely competing, falsifiable hypotheses", evidence: [md] }
+      - { id: hypotheses_first, text: "Hypotheses provably written before tracing (commit order)", evidence: [git, fact, md] }
+
+  - id: architecture_reconstruction
+    name: Architecture reconstruction
+    weight: 20
+    model: judge
+    levels:
+      4: Traces the real entry point through context, state, model, tools, policy, data, runtime, telemetry, and recovery, with exact evidence
+      3: Full path traced with evidence; one or two boundaries only thinly evidenced
+      2: Main path correct, but one or more boundaries assumed or omitted
+      1: README-level component list; unclear who owns what at runtime
+      0: No reconstruction
+    level_sources: { 4: rubric, 3: rubric, 2: rubric, 1: rubric, 0: rubric }
+    elements:
+      - { id: entry_point, text: "The real entry point identified with exact evidence", evidence: [code, md] }
+      - { id: boundaries, text: "Path traced through context, state, model, tools, policy, data, runtime, telemetry and recovery", evidence: [code, config, md] }
+      - { id: runtime_ownership, text: "Clear which component owns what at runtime", evidence: [code, config, md] }
+
+  - id: experimental_rigor
+    name: Experimental rigor
+    weight: 20
+    model: judge
+    levels:
+      4: Reproducible controlled and failure-injection experiments; one variable changed at a time; predictions; raw evidence; counterevidence
+      3: Both experiments ran with controls and raw evidence, with one notable gap (e.g., incomplete raw logs)
+      2: Experiments ran, but controls, predictions, or artifacts are incomplete
+      1: Demo only, unverifiable claims, or no executed or source-level test
+      0: No experiment at all
+    level_sources: { 4: rubric, 3: rubric, 2: rubric, 1: rubric, 0: rubric }
+    findings: [no_controlled_experiment, no_failure_injection]
+    elements:
+      - { id: controlled_experiment, text: "A reproducible controlled experiment changing one variable at a time", evidence: [code, shell, csv, json, log] }
+      - { id: failure_experiment, text: "A reproducible failure-injection experiment", evidence: [code, shell, csv, json, log] }
+      - { id: predictions, text: "Predictions stated before results", evidence: [md, git] }
+      - { id: raw_evidence, text: "Raw evidence saved", evidence: [csv, json, log] }
+      - { id: counterevidence, text: "Counterevidence reported", evidence: [md, csv, json, log] }
+    extra_guidance: >-
+      Report no_controlled_experiment / no_failure_injection as true only when you searched and found
+      no executed experiment of that kind (cite the searches); planned-but-not-run counts as absent.
+
+  - id: production_reasoning
+    name: Production-systems reasoning
+    weight: 15
+    model: judge
+    levels:
+      4: Connects findings to relevant SLOs, safety, privacy, cost, scale, release, idempotency, backpressure, and recovery, without checklist padding
+      3: Most relevant concerns tied to evidence; a few trade-offs shallow
+      2: Discusses several relevant concerns, but cause-and-effect and trade-offs are shallow
+      1: Generic production advice disconnected from evidence
+      0: No production analysis
+    level_sources: { 4: rubric, 3: rubric, 2: rubric, 1: rubric, 0: rubric }
+    elements:
+      - { id: concerns_tied_to_evidence, text: "Findings connected to the relevant concerns (SLOs, safety, privacy, cost, scale, release, idempotency, backpressure, recovery)", evidence: [md, code, config, csv, json, log] }
+      - { id: tradeoffs, text: "Cause-and-effect and trade-offs explained, not just listed", evidence: [md] }
+      - { id: no_padding, text: "No checklist padding: only concerns relevant to this system", evidence: [md] }
+
+  - id: evidence_quality
+    name: Evidence quality & provenance
+    weight: 15
+    model: judge
+    levels:
+      4: Commit-bound citations to source, tests, and config; runtime artifacts; facts separated from interpretations; contradictions handled; confidence stated
+      3: Pinned citations and a ledger, but one area is thin (e.g., few test or config citations)
+      2: Sources mostly credible, but links unpinned or provenance labels inconsistent
+      1: AI or README claims presented as facts; ledger missing
+      0: No traceable evidence
+    level_sources: { 4: rubric, 3: rubric, 2: rubric, 1: rubric, 0: rubric }
+    findings: [fabricated_results]
+    elements:
+      - { id: commit_bound, text: "Commit-bound citations to source, tests and config", evidence: [md, fact] }
+      - { id: runtime_artifacts, text: "Runtime artifacts saved", evidence: [log, csv, json] }
+      - { id: ledger, text: "An evidence ledger", evidence: [md, csv] }
+      - { id: facts_vs_interpretation, text: "Facts separated from interpretations, with confidence stated", evidence: [md] }
+      - { id: contradictions_handled, text: "Contradictions between sources handled explicitly", evidence: [md] }
+    extra_guidance: >-
+      Report fabricated_results as true only if a reported number contradicts the raw artifact it
+      claims to come from and no explanation is given; cite both locations.
+
+  - id: synthesis
+    name: Synthesis & decision quality
+    weight: 10
+    model: judge
+    # The rubric gives this criterion point bands (9-10, 6-8, 3-5, 0-2, 0-2); they map to levels 4..0.
+    levels:
+      4: Directly answers the assignment's design decision with comparative or counterfactual evidence
+      3: Answers it credibly, but with limited depth or one unsupported link
+      2: Mentions the concern, but is mostly a generic repository review
+      1: Doesn't address the assignment-specific decision
+      0: No decision at all
+    level_sources: { 4: rubric, 3: rubric, 2: rubric, 1: rubric, 0: rubric }
+    elements:
+      - { id: answers_decision, text: "Directly answers the assignment's design decision", evidence: [md] }
+      - { id: comparative_evidence, text: "Uses comparative or counterfactual evidence", evidence: [md, csv, json] }
+
+  - id: ai_use_transparency
+    name: AI-use transparency & verification
+    weight: 5
+    model: judge
+    levels:
+      4: Material AI contributions, prompts, accepted and rejected suggestions, and verification status are all auditable
+      3: All disclosed, but one element is hard to reconstruct
+      2: AI use disclosed generally, but its material influence is hard to reconstruct
+      1: AI use hidden, or AI-generated evidence presented as real execution
+      0: No disclosure at all (this also triggers the 75 cap)
+    level_sources: { 4: rubric, 3: rubric, 2: rubric, 1: rubric, 0: rubric }
+    elements:
+      - { id: contributions, text: "Material AI contributions disclosed", evidence: [md, git] }
+      - { id: prompts, text: "Prompts auditable", evidence: [md, log, json] }
+      - { id: accepted_rejected, text: "Accepted and rejected suggestions recorded", evidence: [md, log] }
+      - { id: verification_status, text: "Verification status of AI output stated", evidence: [md, log] }
+
+  - id: communication
+    name: Communication & reproducibility
+    weight: 5
+    model: judge
+    levels:
+      4: Executive-first, precise visuals, glossary where needed, exact commands, sanitized artifacts, clear limitations
+      3: Clear and reproducible, with minor gaps
+      2: Understandable but uneven, or reproduction needs interpretation
+      1: Difficult to follow, or can't be reproduced
+      0: No readable paper
+    level_sources: { 4: rubric, 3: rubric, 2: rubric, 1: rubric, 0: rubric }
+    elements:
+      - { id: executive_first, text: "Executive summary first", evidence: [md] }
+      - { id: visuals_glossary, text: "Precise visuals, and a glossary where needed", evidence: [md] }
+      - { id: exact_commands, text: "Exact reproduction commands", evidence: [md, shell] }
+      - { id: sanitized_artifacts, text: "Artifacts sanitized (no secrets or junk)", evidence: [fact, md] }
+      - { id: clear_limits, text: "Limitations stated clearly", evidence: [md] }
+
+signals:
+  version_manifest:
+    description: Commit SHA or version manifest present
+    any_file: ["*manifest*", "VERSION*", "*versions*.txt", "*versions*.json"]
+    any_text: ["\\b(?:commit|sha|revision)\\b[^\\n]{0,20}\\b[0-9a-f]{7,40}\\b"]
+  controlled_experiment:
+    description: Controlled experiment artifacts present
+    any_file: ["*experiment*", "*ablation*", "*control*"]
+    any_heading: ["controlled experiment", "experiment", "ablation"]
+  failure_injection:
+    description: Failure-injection experiment present
+    any_file: ["*failure*", "*fault*", "*chaos*"]
+    any_heading: ["failure", "fault injection", "chaos"]
+  evidence_ledger:
+    description: Evidence ledger present
+    any_file: ["*ledger*"]
+    any_heading: ["evidence ledger", "ledger"]
+  ai_use_disclosure:
+    description: AI-use disclosure present
+    any_file: ["*ai*use*", "*ai*disclosure*"]
+    any_heading: ["ai[- ]use", "ai disclosure", "use of ai", "ai assistance", "ai[- ]collaboration"]
+  reported_vs_raw_mismatch:
+    description: Reported numbers disagree with raw results (cross-artifact check)
+    fact: cross_artifact.disagreements
+
+# Caps from the design spec. The rubric text above names only the 75 cap; the others are the
+# spec's integrity caps and can be removed here if the course does not use them.
+caps:
+  - { id: no_version_manifest, max: 85, decided_by: fact, signal: version_manifest, when: absent,
+      description: No commit SHA or version manifest }
+  - { id: no_controlled_experiment, max: 70, decided_by: fact_and_judge, signal: controlled_experiment, when: absent,
+      judge_finding: no_controlled_experiment, description: No controlled experiment }
+  - { id: no_failure_injection, max: 80, decided_by: fact_and_judge, signal: failure_injection, when: absent,
+      judge_finding: no_failure_injection, description: No failure injection }
+  - { id: no_evidence_ledger, max: 70, decided_by: fact, signal: evidence_ledger, when: absent,
+      description: No evidence ledger }
+  - { id: no_ai_disclosure, max: 75, decided_by: fact, signal: ai_use_disclosure, when: absent,
+      description: No AI-use disclosure }
+  - { id: fabricated_results, max: 50, decided_by: fact_and_judge, signal: reported_vs_raw_mismatch, when: present,
+      judge_finding: fabricated_results, description: Fabricated results or concealed AI evidence }
+
+bands:
+  - { name: Distinction, min: 90 }
+  - { name: Strong pass, min: 80 }
+  - { name: Pass, min: 70 }
+  - { name: Revision required, min: 60 }
+  - { name: Insufficient, min: 0 }
